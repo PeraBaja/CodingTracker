@@ -9,6 +9,7 @@ class CodingSession
         {
             if (value.CompareTo(DateTime.Now) > 0)
                 throw new ArgumentException("The end time must be set before now.");
+            _startTime = value;
         }
     }
 
