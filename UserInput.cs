@@ -13,7 +13,7 @@ static class UserInput
     public static string GetOption()
     {
         Console.WriteLine("Select an option");
-        return Console.ReadLine() ?? "";
+        return (Console.ReadLine() ?? "").ToLower();
     }
     static public DateTime? GetDateTime()
     {
