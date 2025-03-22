@@ -12,7 +12,7 @@ class Menu(CodingController codingController, StopwatchView stopwatchView)
 
         while (true)
         {
-            string userOption = UserInput.GetOption().ToLower();
+            string userOption = UserInput.GetOption();
             if (userOption.Equals("exit")) Environment.Exit(0);
             else SelectOption(userOption);
         }
@@ -34,11 +34,56 @@ class Menu(CodingController codingController, StopwatchView stopwatchView)
                 Update();
                 break;
             case "list":
-                IEnumerable<CodingSession> codingSessions = codingController.List();
-                TableData.ShowSessions(codingSessions);
+                List();
                 break;
         }
     }
+
+    void List()
+    {
+        var codingSessions = codingController.List();
+
+
+        while (true)
+        {
+            Console.WriteLine("You can filter by typing: 'last week' - last month - 'last year' " +
+            "and you can sort by typing: 'ascending' - 'descending'");
+            var option = UserInput.GetOption();
+            if (option.Equals("go back")) return;
+            IEnumerable<CodingSession> filteredCodingSessions = [];
+            switch (option)
+            {
+
+                case "last week":
+                    {
+                        filteredCodingSessions = codingSessions.Where(s =>
+                        {
+                            Console.WriteLine(DateTime.Now.Subtract(s.EndTime).Days);
+                            return DateTime.Now.Subtract(s.EndTime).Days < 7 && DateTime.Now.Subtract(s.EndTime).Days > 0;
+                        });
+                        break;
+                    }
+                case "last month":
+                    {
+                        filteredCodingSessions = codingSessions.Where(s => s.EndTime.Month == DateTime.Today.Month && s.EndTime.Year == DateTime.Today.Year);
+                        break;
+                    }
+                case "last year":
+                    {
+                        filteredCodingSessions = codingSessions.Where(s => s.EndTime.Year == DateTime.Today.Year);
+                        break;
+                    }
+                default:
+                    {
+                        Console.WriteLine("Error. The typed filter option doesn't exist");
+                        break;
+                    }
+
+            }
+            TableData.ShowSessions(filteredCodingSessions);
+        }
+    }
+
     void Add()
     {
         var startTime = UserInput.GetDateTime();
