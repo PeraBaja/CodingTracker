@@ -47,7 +47,7 @@ class CodingController(IConfigurationRoot config)
 
         selectedSession.EndTime = endTime ?? selectedSession.EndTime;
         _connection.Open();
-        int result = _connection.Execute("INSERT INTO coding_session (startTime, endTime) Values (@StartTime, @EndTime)", selectedSession);
+        int result = _connection.Execute("UPDATE coding_session SET startTime = @StartTime, endTime = @EndTime WHERE id = @Id)", selectedSession);
         _connection.Close();
         return (QueryStatus)result;
     }
