@@ -2,16 +2,14 @@ using Spectre.Console;
 using CodingTracker.Exceptions;
 class Menu(CodingController codingController, StopwatchView stopwatchView)
 {
-
     public void Display()
+    {
+        while (true)
     {
         Markup markup = new("[gray]Welcome to the coding tracker! [/]" +
         "\n These are the aviable options: list - add - delete - update - stopwatch" +
         "\n Or type \"exit\" to close the program", new Style(foreground: Color.Aqua));
         AnsiConsole.Write(markup);
-
-        while (true)
-        {
             string userOption = UserInput.GetOption();
             if (userOption.Equals("exit")) Environment.Exit(0);
             else SelectOption(userOption);
