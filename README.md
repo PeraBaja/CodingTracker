@@ -63,7 +63,7 @@ Developed using C# and SQLite.
 
 ## Things to Improve
 
-- The current UI can be hard to understand. Some commands are too verbose, which slows down the habit-tracking process.
+- The current UI can be hard to understand. Some commands are too verbose, which slows down the session-tracking process.
 
 ## Lessons Learned
 
