@@ -5,11 +5,11 @@ class Menu(CodingController codingController, StopwatchView stopwatchView)
     public void Display()
     {
         while (true)
-    {
-        Markup markup = new("[gray]Welcome to the coding tracker! [/]" +
-        "\n These are the aviable options: list - add - delete - update - stopwatch" +
-        "\n Or type \"exit\" to close the program", new Style(foreground: Color.Aqua));
-        AnsiConsole.Write(markup);
+        {
+            Markup markup = new("[gray]Welcome to the coding tracker! [/]" +
+            "\n These are the aviable options: list - add - delete - update - stopwatch" +
+            "\n Or type \"exit\" to close the program", new Style(foreground: Color.Aqua));
+            AnsiConsole.Write(markup);
             string userOption = UserInput.GetOption();
             if (userOption.Equals("exit")) Environment.Exit(0);
             else SelectOption(userOption);
@@ -26,9 +26,11 @@ class Menu(CodingController codingController, StopwatchView stopwatchView)
                 Add();
                 break;
             case "delete":
+                ListAll();
                 Delete();
                 break;
             case "update":
+                ListAll();
                 Update();
                 break;
             case "list":
@@ -37,26 +39,29 @@ class Menu(CodingController codingController, StopwatchView stopwatchView)
         }
     }
 
+    void ListAll()
+    {
+        var codingSessions = codingController.List();
+        TableData.ShowSessions(codingSessions);
+    }
     void List()
     {
         var codingSessions = codingController.List();
-
-
         while (true)
         {
-            Console.WriteLine("You can filter by typing: 'last week' - last month - 'last year' " +
-            "and you can sort by typing: 'ascending' - 'descending'");
-            var option = UserInput.GetOption();
-            if (option.Equals("go back")) return;
+            Console.WriteLine("You can filter by typing: 'last week' - last month - 'last year' - 'all'");
+            var filterOption = UserInput.GetOption();
+            Console.Clear();
+            if (filterOption.Equals("go back")) return;
             IEnumerable<CodingSession> filteredCodingSessions = [];
-            switch (option)
+            switch (filterOption)
             {
-
+                case "all":
+                    break;
                 case "last week":
                     {
                         filteredCodingSessions = codingSessions.Where(s =>
                         {
-                            Console.WriteLine(DateTime.Now.Subtract(s.EndTime).Days);
                             return DateTime.Now.Subtract(s.EndTime).Days < 7 && DateTime.Now.Subtract(s.EndTime).Days > 0;
                         });
                         break;
@@ -74,7 +79,29 @@ class Menu(CodingController codingController, StopwatchView stopwatchView)
                 default:
                     {
                         Console.WriteLine("Error. The typed filter option doesn't exist");
+                        continue;
+                    }
+
+            }
+            Console.WriteLine("And you can sort by typing: 'recent' - 'old'");
+            var sorterOption = UserInput.GetOption();
+            if (sorterOption.Equals("go back")) return;
+            switch (sorterOption)
+            {
+                case "old":
+                    {
+                        filteredCodingSessions = filteredCodingSessions.OrderBy(codingSession => codingSession.StartTime);
                         break;
+                    }
+                case "recent":
+                    {
+                        filteredCodingSessions = filteredCodingSessions.OrderByDescending(codingSession => codingSession.StartTime);
+                        break;
+                    }
+                default:
+                    {
+                        Console.WriteLine("Error. The typed sorting option doesn't exist");
+                        continue;
                     }
 
             }
